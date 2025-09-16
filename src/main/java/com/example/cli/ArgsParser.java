@@ -27,7 +27,7 @@ public class ArgsParser {
       }
     }
 
-    // Enforce zone as it is required field in the request.
+    // Enforce zone as it is a required field in the request.
     if (zone == null && !showHelp) {
       throw new IllegalArgumentException("Zone (--zone SE1|SE2|SE3|SE4) is required");
     }

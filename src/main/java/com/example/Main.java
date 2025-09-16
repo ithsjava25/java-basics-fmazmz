@@ -30,6 +30,6 @@ public class Main {
 
         List<PricePoint> prices = priceService.getPricePoints(options.zone(), options.date());
 
-        CliPrinter.printPrices(prices, options.zone().name(), options.date());
+        CliPrinter.printPrices(prices, options.zone().name(), options.date(), options.sorted());
     }
 }
