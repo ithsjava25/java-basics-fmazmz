@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PriceService {
-  private final ElpriserAPI elpriserAPI = new ElpriserAPI();
+  private final ElpriserAPI elpriserAPI;
+
+  public PriceService(ElpriserAPI elpriserAPI) {
+    this.elpriserAPI = elpriserAPI;
+  }
 
   public List<PricePoint> getPricePoints(ElpriserAPI.Prisklass zone, LocalDate date) {
     List<PricePoint> pricePoints = new ArrayList<>();
