@@ -7,10 +7,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PriceService {
+public class PriceRetrievalService {
   private final ElpriserAPI elpriserAPI;
 
-  public PriceService(ElpriserAPI elpriserAPI) {
+  public PriceRetrievalService(ElpriserAPI elpriserAPI) {
     this.elpriserAPI = elpriserAPI;
   }
 

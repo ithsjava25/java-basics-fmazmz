@@ -4,7 +4,7 @@ import com.example.api.ElpriserAPI;
 import com.example.cli.ArgsParser;
 import com.example.cli.CliPrinter;
 import com.example.model.PricePoint;
-import com.example.service.PriceService;
+import com.example.service.PriceRetrievalService;
 
 import java.util.List;
 
@@ -26,9 +26,9 @@ public class Main {
         }
 
         ElpriserAPI elpriserAPI = new ElpriserAPI();
-        PriceService priceService = new PriceService(elpriserAPI);
+        PriceRetrievalService priceRetrievalService = new PriceRetrievalService(elpriserAPI);
 
-        List<PricePoint> prices = priceService.getPricePoints(options.zone(), options.date());
+        List<PricePoint> prices = priceRetrievalService.getPricePoints(options.zone(), options.date());
 
         CliPrinter.printPrices(prices, options.zone().name(), options.date(), options.sorted());
     }
