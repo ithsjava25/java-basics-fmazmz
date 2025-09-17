@@ -29,4 +29,36 @@ public class CliPrinter {
             );
         }
     }
+
+    public static void printCheapestAndMostExpensiveHours(PricePoint cheapest, PricePoint expensive) {
+        if (cheapest != null) {
+            System.out.printf("Lägsta pris: %s : %.2f SEK/kWh%n", cheapest.time(), cheapest.price());
+        }
+        if (expensive != null) {
+            System.out.printf("Högsta pris: %s : %.2f SEK/kWh%n", expensive.time(), expensive.price());
+        }
+    }
+
+    public static void printMeanPrice(double meanPrice) {
+        System.out.printf("Medelpris: %.2f SEK/kWh%n", meanPrice);
+    }
+
+
+    public static void printChargingWindow(List<PricePoint> window, int hours) {
+        if (window == null || window.isEmpty()) {
+            System.out.println("Ingen laddningsperiod hittades för " + hours + " timmar.");
+            return;
+        }
+
+        PricePoint start = window.getFirst();
+
+        double avg = window.stream()
+                .mapToDouble(PricePoint::price)
+                .average()
+                .orElse(0);
+
+        System.out.printf("Påbörja laddning kl %02d:00%n", start.time().getHour());
+        System.out.printf("Medelpris för fönster: %.2f öre%n", avg * 100);
+    }
+
 }

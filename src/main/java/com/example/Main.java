@@ -4,6 +4,7 @@ import com.example.api.ElpriserAPI;
 import com.example.cli.ArgsParser;
 import com.example.cli.CliPrinter;
 import com.example.model.PricePoint;
+import com.example.service.PriceCalculatorService;
 import com.example.service.PriceRetrievalService;
 
 import java.util.List;
@@ -31,5 +32,20 @@ public class Main {
         List<PricePoint> prices = priceRetrievalService.getPricePoints(options.zone(), options.date());
 
         CliPrinter.printPrices(prices, options.zone().name(), options.date(), options.sorted());
+
+        PriceCalculatorService priceCalculatorService = new PriceCalculatorService();
+
+        double mean = priceCalculatorService.calculateMean(prices);
+        PricePoint cheapest = priceCalculatorService.findCheapestHour(prices);
+        PricePoint expensive = priceCalculatorService.findMostExpensiveHour(prices);
+
+        CliPrinter.printCheapestAndMostExpensiveHours(cheapest, expensive);
+        CliPrinter.printMeanPrice(mean);
+
+        if (options.chargingHours() > 0) {
+            List<PricePoint> window = priceCalculatorService.findOptimalChargingWindow(prices, options.chargingHours());
+            CliPrinter.printChargingWindow(window, options.chargingHours());
+        }
+
     }
 }
