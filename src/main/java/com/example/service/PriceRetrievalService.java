@@ -22,9 +22,12 @@ public class PriceRetrievalService {
       List<ElpriserAPI.Elpris> raw = elpriserAPI.getPriser(d, zone);
 
       // Convert API DTO's into internal DTO's as extra data fields are not required.
-      raw.forEach(r -> pricePoints.add(
-              new PricePoint(r.timeStart().toLocalDateTime(), r.sekPerKWh())
-      ));
+      raw.forEach(r -> {
+        PricePoint point = new PricePoint(r.timeStart().toLocalDateTime(), r.sekPerKWh());
+        if (!pricePoints.contains(point)) {
+          pricePoints.add(point);
+        }
+      });
     }
 
     // Return Elpris objects as internal.

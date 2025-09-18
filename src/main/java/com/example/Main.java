@@ -30,7 +30,10 @@ public class Main {
         PriceRetrievalService priceRetrievalService = new PriceRetrievalService(elpriserAPI);
 
         List<PricePoint> prices = priceRetrievalService.getPricePoints(options.zone(), options.date());
-
+        if (prices.isEmpty()) {
+            System.out.println("No data available for zone " + options.zone() + " and date " + options.date());
+            return;
+        }
         CliPrinter.printPrices(prices, options.zone().name(), options.date(), options.sorted());
 
         PriceCalculatorService priceCalculatorService = new PriceCalculatorService();

@@ -21,9 +21,9 @@ public class CliPrinter {
 
 
     private static String hourRange(LocalDateTime start) {
-        int s = start.getHour();
-        int e = (s + 1) % 24;
-        return String.format("%02d-%02d", s, e);
+        LocalDateTime end = start.plusHours(1);
+        return start.format(DateTimeFormatter.ofPattern("HH")) + "-" +
+                end.format(DateTimeFormatter.ofPattern("HH"));
     }
 
     private static String formatOre(double sekPerKWh) {
@@ -31,11 +31,6 @@ public class CliPrinter {
     }
 
     public static void printPrices(List<PricePoint> prices, String zone, LocalDate date, boolean sorted) {
-        if (prices.isEmpty()) {
-            System.out.println("No data available for zone " + zone + " and date " + date);
-            return;
-        }
-
         System.out.println("...Electricity prices for zone " + zone + " (starting " + date + ")...");
 
         // Sort by price descending if sorted flag is detected in args options.
@@ -47,7 +42,7 @@ public class CliPrinter {
                     );
         } else {
             prices.forEach(p ->
-                    System.out.printf("%s   :   %.3f SEK/kWh%n", p.time(), p.price())
+                    System.out.println(hourRange((p.time())) + " " + formatOre(p.price()) + " öre")
             );
         }
     }
