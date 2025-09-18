@@ -16,7 +16,7 @@ public class Main {
         try {
             options = ArgsParser.parse(args);
         } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
             ArgsParser.printHelp();
             return;
         }

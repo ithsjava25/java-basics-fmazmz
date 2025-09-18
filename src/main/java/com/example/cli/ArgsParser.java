@@ -19,13 +19,20 @@ public class ArgsParser {
     // Switch case to catch input args and re-assign them to the final Args object.
     for (int i = 0; i < args.length; i++) {
       switch (args[i]) {
-        case "--zone" -> zone = ElpriserAPI.Prisklass.valueOf(args[++i].toUpperCase());
+        case "--zone" -> {
+          String zoneArg = args[++i];
+          try {
+            zone = ElpriserAPI.Prisklass.valueOf(zoneArg.toUpperCase());
+          } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Invalid zone. Use SE1|SE2|SE3|SE4.");
+          }
+        }
         case "--date" -> {
           String dateArg = args[++i];
           try {
             date = LocalDate.parse(dateArg);
           } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date format. Please use YYYY-MM-DD.");
+            throw new IllegalArgumentException("Invalid date. Please use YYYY-MM-DD.");
           }
         }
         case "--sorted" -> sorted = true;
@@ -36,7 +43,7 @@ public class ArgsParser {
 
     // Enforce zone as it is a required field in the request.
     if (zone == null && !showHelp) {
-      throw new IllegalArgumentException("Invalid Zone (--zone SE1|SE2|SE3|SE4) is required");
+      throw new IllegalArgumentException("Zone is missing; (--zone SE1|SE2|SE3|SE4) is required.");
     }
 
 
