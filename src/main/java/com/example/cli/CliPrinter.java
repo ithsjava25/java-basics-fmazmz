@@ -41,9 +41,9 @@ public class CliPrinter {
         // Sort by price descending if sorted flag is detected in args options.
         if (sorted) {
             prices.stream()
-                    .sorted(Comparator.comparingDouble(PricePoint::price).reversed())
+                    .sorted(Comparator.comparingDouble(PricePoint::price))
                     .forEach(p ->
-                            System.out.printf("%s   :   %.3f SEK/kWh%n", p.time(), p.price())
+                            System.out.println(hourRange((p.time())) + " " + formatOre(p.price()) + " öre")
                     );
         } else {
             prices.forEach(p ->
@@ -54,15 +54,15 @@ public class CliPrinter {
 
     public static void printCheapestAndMostExpensiveHours(PricePoint cheapest, PricePoint expensive) {
         if (cheapest != null) {
-            System.out.printf("Lägsta pris: %s : %.2f SEK/kWh%n", cheapest.time(), cheapest.price());
+            System.out.println("Lägsta pris: " + hourRange(cheapest.time()) + " -> " + formatOre(cheapest.price()) + " öre");
         }
         if (expensive != null) {
-            System.out.printf("Högsta pris: %s : %.2f SEK/kWh%n", expensive.time(), expensive.price());
+            System.out.println("Högsta pris: " + hourRange(expensive.time()) + " -> " + formatOre(expensive.price()) + " öre");
         }
     }
 
     public static void printMeanPrice(double meanPrice) {
-        System.out.printf("Medelpris: " + formatOre(meanPrice) + " öre");
+        System.out.println("Medelpris: " + formatOre(meanPrice) + " öre");
     }
 
 
@@ -72,15 +72,12 @@ public class CliPrinter {
             return;
         }
 
-        PricePoint start = window.getFirst();
+        String startStr = window.getFirst().time().format(HM);
+        double avgSek = window.stream().mapToDouble(PricePoint::price).average().orElse(0.0);
 
-        double avg = window.stream()
-                .mapToDouble(PricePoint::price)
-                .average()
-                .orElse(0);
-
-        System.out.printf("Påbörja laddning kl %02d:00%n", start.time().getHour());
-        System.out.printf("Medelpris för fönster: " + formatOre(avg) + " öre");
+        System.out.printf("%n... CHARGING ...%n");
+        System.out.println("Påbörja laddning kl " + startStr);
+        System.out.println("Medelpris för fönster: " + formatOre(avgSek) + " öre");
     }
 
 }
