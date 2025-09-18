@@ -30,30 +30,46 @@ public class PriceCalculatorService {
   }
 
   public List<PricePoint> findOptimalChargingWindow(List<PricePoint> pricePoints, int hours) {
-
-    // Make sure hours requested do not exceed amount of PricePoints available.
-    if (pricePoints.size() < hours) {
+    if (pricePoints == null || hours <= 0 || pricePoints.size() < hours) {
       return List.of();
     }
 
-
-    double currentSum = 0;
-    for (int i = 0; i < hours; i++) {
-      currentSum += pricePoints.get(i).price();
+    // Convert double to longs / SEK to öre to avoid incorrect decimal point calculations.
+    int n = pricePoints.size();
+    var scaled = new long[n];
+    for (int i = 0; i < n; i++) {
+      scaled[i] = Math.round(pricePoints.get(i).price() * 100);
     }
 
-    double minSum = currentSum;
+    int bestStartIndex = findBestWindowStart(scaled, hours);
+    return pricePoints.subList(bestStartIndex, bestStartIndex + hours);
+  }
+
+  private int findBestWindowStart(long[] scaled, int hours) {
+
+    // First Hour.
+    long currentSum = 0;
+    for (int i = 0; i < hours; i++) {
+      currentSum += scaled[i];
+    }
+
+    // Treat first hour as min.
+    long minSum = currentSum;
+
+    // Treat first hour as best start.
     int bestStartIndex = 0;
 
-    for (int i = 1; i <= pricePoints.size() - hours; i++) {
-      currentSum = currentSum - pricePoints.get(i - 1).price() + pricePoints.get(i + hours - 1).price();
+    for (int i = 1; i <= scaled.length - hours; i++) {
+      currentSum += scaled[i + hours - 1] - scaled[i - 1];
 
-      if (currentSum < minSum) {
+      // If both sums have the same price, choose the earliest.
+      if (currentSum < minSum || (currentSum == minSum && i < bestStartIndex)) {
         minSum = currentSum;
         bestStartIndex = i;
       }
     }
-    return pricePoints.subList(bestStartIndex, bestStartIndex + hours);
+
+    return bestStartIndex;
   }
 
 }
