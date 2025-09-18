@@ -2,11 +2,33 @@ package com.example.cli;
 
 import com.example.model.PricePoint;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class CliPrinter {
+
+    private static final DecimalFormatSymbols SV =
+            DecimalFormatSymbols.getInstance(Locale.of("sv", "SE"));
+
+    private static final DecimalFormat ORE_2 = new DecimalFormat("0.00", SV);
+    private static final DateTimeFormatter HM = DateTimeFormatter.ofPattern("HH:mm");
+
+
+    private static String hourRange(LocalDateTime start) {
+        int s = start.getHour();
+        int e = (s + 1) % 24;
+        return String.format("%02d-%02d", s, e);
+    }
+
+    private static String formatOre(double sekPerKWh) {
+        return ORE_2.format(sekPerKWh * 100.0);
+    }
 
     public static void printPrices(List<PricePoint> prices, String zone, LocalDate date, boolean sorted) {
         if (prices.isEmpty()) {
@@ -40,7 +62,7 @@ public class CliPrinter {
     }
 
     public static void printMeanPrice(double meanPrice) {
-        System.out.printf("Medelpris: %.2f SEK/kWh%n", meanPrice);
+        System.out.printf("Medelpris: " + formatOre(meanPrice) + " öre");
     }
 
 
@@ -58,7 +80,7 @@ public class CliPrinter {
                 .orElse(0);
 
         System.out.printf("Påbörja laddning kl %02d:00%n", start.time().getHour());
-        System.out.printf("Medelpris för fönster: %.2f öre%n", avg * 100);
+        System.out.printf("Medelpris för fönster: " + formatOre(avg) + " öre");
     }
 
 }
