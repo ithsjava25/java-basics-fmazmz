@@ -36,7 +36,7 @@ public class CliPrinter {
         // Sort by price descending if sorted flag is detected in args options.
         if (sorted) {
             prices.stream()
-                    .sorted(Comparator.comparingDouble(PricePoint::price))
+                    .sorted(Comparator.comparingDouble(PricePoint::price).reversed())
                     .forEach(p ->
                             System.out.println(hourRange((p.time())) + " " + formatOre(p.price()) + " öre")
                     );
